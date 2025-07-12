@@ -1,0 +1,6 @@
+services:
+  at-identity:
+    build: .
+    ports: ['8001:8000']
+    environment:
+      - DATABASE_URL=postgresql://identity

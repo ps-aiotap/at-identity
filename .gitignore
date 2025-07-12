@@ -1,0 +1,97 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Django
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+media/
+
+# Virtual Environment
+venv/
+storeloop-venv/
+
+# Environment variables
+.env
+
+# Node.js
+node_modules/
+npm-debug.log
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Tailwind generated files
+staticcss/output.css
+
+# Playwright test files
+tests/playwright/discovered_*.json
+tests/playwright/complete_*.json
+tests/playwright/enhanced_*.json
+tests/playwright/navigation_*.json
+tests/playwright/simple_*.json
+tests/playwright/generated_*.spec.js
+tests/playwright/advanced_*.spec.js
+tests/playwright/generated_*.json
+tests/playwright/test-results/
+tests/playwright/playwright-report/
+tests/playwright/test-results.json
+tests/playwright/test-results.xml
+tests/playwright/pipeline_report.json
+tests/playwright/report.html
+tests/playwright/dashboard.html
+tests/playwright/performance.json
+tests/playwright/.auth/
+tests/playwright/screenshots/
+tests/playwright/videos/
+tests/playwright/traces/
+
+# New Playwright test results
+tests/playwright-report/
+tests/test-results/
+tests/test-results.json
+tests/test-results.xml
+tests/.auth/
+tests/screenshots/
+tests/videos/
+tests/traces/
+tests/node_modules/
+tests/package-lock.json
+
+# Internal documentation (not for public repo)
+storeloop-internal/
+
+# New Playwright test results
+tests/playwright-report/
+tests/test-results/
+tests/test-results.json
+tests/test-results.xml
+tests/.auth/
+tests/screenshots/
+tests/videos/
+tests/traces/
+tests/node_modules/
+tests/package-lock.json

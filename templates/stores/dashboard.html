@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard - StoreLoop</title>
+</head>
+<body>
+    <h1>StoreLoop Dashboard</h1>
+    
+    <p>Welcome, {{ user.username }}! (User ID: {{ user.id }})</p>
+    
+    <div>
+        <h2>Your Stores</h2>
+        {% for store in stores %}
+            <div>
+                <h3>{{ store.name }}</h3>
+                <p>Owner: {{ store.owner_username }} (ID: {{ store.owner_id }})</p>
+            </div>
+        {% empty %}
+            <p>No stores yet. <a href="{% url 'create_store' %}">Create your first store</a></p>
+        {% endfor %}
+    </div>
+    
+    <div>
+        <a href="{% url 'create_store' %}">Create New Store</a> |
+        <a href="{% url 'logout' %}">Logout</a>
+    </div>
+    
+    <hr>
+    <p><strong>Userless System:</strong> No local Django users - all authentication via AT Identity</p>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>NGO Partner Dashboard - StoreLoop</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body style="font-family: Arial, sans-serif; background: #f9fafb;">
+    <div style="max-width: 1200px; margin: 0 auto; padding: 20px;">
+        <div style="background: white; border-radius: 8px; padding: 20px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+            <h1 style="color: #1f2937; margin: 0 0 10px 0;">NGO Partner Dashboard</h1>
+            <p style="color: #6b7280; margin: 0;">Manage multiple artisan stores and track cooperative performance</p>
+        </div>
+
+        <!-- Store Switching Interface -->
+        <div style="background: white; border-radius: 8px; padding: 20px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+            <h2 style="color: #1f2937; margin: 0 0 15px 0;">Managed Stores</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px;">
+                {% for store in managed_stores %}
+                <div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 15px; cursor: pointer; transition: all 0.2s;" onclick="switchToStore('{{ store.id }}')">
+                    <h3 style="margin: 0 0 10px 0; color: #3b82f6;">{{ store.name }}</h3>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        <span style="color: #6b7280;">Products:</span>
+                        <span style="font-weight: bold;">{{ store.product_count }}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        <span style="color: #6b7280;">Orders:</span>
+                        <span style="font-weight: bold;">{{ store.order_count }}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span style="color: #6b7280;">Revenue:</span>
+                        <span style="font-weight: bold; color: #10b981;">₹{{ store.total_revenue }}</span>
+                    </div>
+                </div>
+                {% empty %}
+                <p style="color: #6b7280;">No managed stores found. Contact admin to assign stores.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Aggregate Analytics -->
+        <div style="background: white; border-radius: 8px; padding: 20px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+            <h2 style="color: #1f2937; margin: 0 0 15px 0;">Aggregate Analytics</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px;">
+                <div style="text-align: center; padding: 20px; background: #f0f9ff; border-radius: 8px;">
+                    <div style="font-size: 2em; font-weight: bold; color: #3b82f6;">{{ total_stores }}</div>
+                    <div style="color: #6b7280;">Total Stores</div>
+                </div>
+                <div style="text-align: center; padding: 20px; background: #f0fdf4; border-radius: 8px;">
+                    <div style="font-size: 2em; font-weight: bold; color: #10b981;">{{ total_artisans }}</div>
+                    <div style="color: #6b7280;">Active Artisans</div>
+                </div>
+                <div style="text-align: center; padding: 20px; background: #fef3c7; border-radius: 8px;">
+                    <div style="font-size: 2em; font-weight: bold; color: #f59e0b;">{{ total_orders }}</div>
+                    <div style="color: #6b7280;">Total Orders</div>
+                </div>
+                <div style="text-align: center; padding: 20px; background: #fce7f3; border-radius: 8px;">
+                    <div style="font-size: 2em; font-weight: bold; color: #ec4899;">₹{{ total_revenue }}</div>
+                    <div style="color: #6b7280;">Total Revenue</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Artisan Management Tools -->
+        <div style="background: white; border-radius: 8px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+            <h2 style="color: #1f2937; margin: 0 0 15px 0;">Artisan Management</h2>
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background: #f9fafb;">
+                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e5e7eb;">Artisan</th>
+                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e5e7eb;">Store</th>
+                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e5e7eb;">Products</th>
+                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e5e7eb;">Orders</th>
+                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e5e7eb;">Revenue</th>
+                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e5e7eb;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for artisan in artisan_list %}
+                        <tr>
+                            <td style="padding: 12px; border-bottom: 1px solid #f3f4f6;">{{ artisan.name }}</td>
+                            <td style="padding: 12px; border-bottom: 1px solid #f3f4f6;">{{ artisan.store_name }}</td>
+                            <td style="padding: 12px; border-bottom: 1px solid #f3f4f6;">{{ artisan.product_count }}</td>
+                            <td style="padding: 12px; border-bottom: 1px solid #f3f4f6;">{{ artisan.order_count }}</td>
+                            <td style="padding: 12px; border-bottom: 1px solid #f3f4f6;">₹{{ artisan.revenue }}</td>
+                            <td style="padding: 12px; border-bottom: 1px solid #f3f4f6;">
+                                <button onclick="viewStore('{{ artisan.store_id }}')" style="background: #3b82f6; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; margin-right: 5px;">View</button>
+                                <button onclick="helpArtisan('{{ artisan.id }}')" style="background: #10b981; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer;">Help</button>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" style="padding: 20px; text-align: center; color: #6b7280;">No artisans found</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function switchToStore(storeId) {
+            window.location.href = `/stores/dashboard/?store_id=${storeId}`;
+        }
+
+        function viewStore(storeId) {
+            window.open(`/stores/dashboard/?store_id=${storeId}`, '_blank');
+        }
+
+        function helpArtisan(artisanId) {
+            alert(`Help feature for artisan ${artisanId}\n\nIn production, this would:\n- Open support chat interface\n- Show artisan contact information\n- Provide business guidance tools`);
+        }
+    </script>
+</body>
+</html>
