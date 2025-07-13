@@ -29,36 +29,26 @@ AUTHENTICATION_BACKENDS = [
 
 # Application definition
 INSTALLED_APPS = [
-    # "django.contrib.contenttypes",
-    # "django.contrib.sessions",
-    # "django.contrib.messages",
-    # "django.contrib.staticfiles",
-    # # Third party apps
-    # "tailwind",
-    # "theme",
-    # # Local apps
-    # "products",
-    # "orders",
-    # "stores",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
     "rest_framework",
-    "at-identity",
+    "at_identity",
 ]
 
-AUTH_USER_MODEL = "at-identity.User"
+AUTH_USER_MODEL = "at_identity.User"
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
     "at_identity.auth.middleware.ATIdentityMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "stores.middleware.StoreMiddleware",
-    "stores.views.ClearMessagesMiddleware",
 ]
 
 ROOT_URLCONF = "core.urls"
@@ -74,7 +64,6 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
-                "stores.context_processors.store_theme",
             ],
         },
     },
@@ -86,24 +75,16 @@ WSGI_APPLICATION = "core.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.environ.get("DB_NAME", "storeloop"),
+        "NAME": os.environ.get("DB_NAME", "at_identity"),
         "USER": os.environ.get("DB_USER", "postgres"),
         "PASSWORD": os.environ.get("DB_PASSWORD", "postgres"),
-        "HOST": os.environ.get("DB_HOST", "localhost"),
-        "PORT": os.environ.get("DB_PORT", "5432"),
-    },
-    "crm_db": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.environ.get("CRM_DB_NAME", "artisan_crm"),
-        "USER": os.environ.get("DB_USER", "postgres"),
-        "PASSWORD": os.environ.get("DB_PASSWORD", "postgres"),
-        "HOST": os.environ.get("DB_HOST", "localhost"),
+        "HOST": os.environ.get("DB_HOST", "db"),
         "PORT": os.environ.get("DB_PORT", "5432"),
     },
 }
 
 # Database router for CRM
-DATABASE_ROUTERS = ["artisan_crm.database_router.CRMDatabaseRouter"]
+# DATABASE_ROUTERS = ["artisan_crm.database_router.CRMDatabaseRouter"]
 
 
 # Auto-create PostgreSQL database if it doesn't exist
@@ -112,33 +93,31 @@ from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
 
 def create_database_if_not_exists():
-    # Create both main and CRM databases
-    for db_key in ["default", "crm_db"]:
-        db_config = DATABASES[db_key]
-        try:
+    db_config = DATABASES["default"]
+    try:
+        conn = psycopg2.connect(
+            host=db_config["HOST"],
+            port=db_config["PORT"],
+            user=db_config["USER"],
+            password=db_config["PASSWORD"],
+            database=db_config["NAME"],
+        )
+        conn.close()
+    except psycopg2.OperationalError as e:
+        if "does not exist" in str(e):
             conn = psycopg2.connect(
                 host=db_config["HOST"],
                 port=db_config["PORT"],
                 user=db_config["USER"],
                 password=db_config["PASSWORD"],
-                database=db_config["NAME"],
+                database="postgres",
             )
+            conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+            cursor = conn.cursor()
+            cursor.execute(f'CREATE DATABASE "{db_config["NAME"]}"')
+            cursor.close()
             conn.close()
-        except psycopg2.OperationalError as e:
-            if "does not exist" in str(e):
-                conn = psycopg2.connect(
-                    host=db_config["HOST"],
-                    port=db_config["PORT"],
-                    user=db_config["USER"],
-                    password=db_config["PASSWORD"],
-                    database="postgres",
-                )
-                conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
-                cursor = conn.cursor()
-                cursor.execute(f'CREATE DATABASE "{db_config["NAME"]}"')
-                cursor.close()
-                conn.close()
-                print(f"Created database: {db_config['NAME']}")
+            print(f"Created database: {db_config['NAME']}")
 
 
 # Only create database during migrations or runserver
@@ -150,11 +129,7 @@ if "migrate" in sys.argv or "runserver" in sys.argv:
     except Exception as e:
         print(f"Warning: Could not auto-create database: {e}")
 
-    # Run core migrations on CRM database if needed
-    if "migrate" in sys.argv and "--database=crm_db" in sys.argv:
-        print(
-            "Note: Run 'python manage.py migrate --database=crm_db' to setup CRM database"
-        )
+
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
@@ -221,7 +196,7 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 AT_IDENTITY_URL = "http://localhost:8001/api/"
-APP_NAME = "storeloop"
+APP_NAME = "at_identity"
 
 # Allauth settings
 SITE_ID = 1
@@ -243,7 +218,7 @@ INTERNAL_IPS = [
 
 # Email settings
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-DEFAULT_FROM_EMAIL = "noreply@storeloop.com"
+DEFAULT_FROM_EMAIL = "noreply@at-identity.com"
 
 # Razorpay settings
 RAZORPAY_KEY_ID = os.environ.get("RAZORPAY_KEY_ID", "")
@@ -251,7 +226,7 @@ RAZORPAY_KEY_SECRET = os.environ.get("RAZORPAY_KEY_SECRET", "")
 RAZORPAY_TEST_MODE = True
 
 # Login redirect
-LOGIN_REDIRECT_URL = "/stores/"
+LOGIN_REDIRECT_URL = "/api/"
 LOGIN_URL = "/accounts/login/"
 
 # Additional settings for Indian locale

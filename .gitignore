@@ -29,7 +29,7 @@ media/
 
 # Virtual Environment
 venv/
-storeloop-venv/
+venv-identity/
 
 # Environment variables
 .env

@@ -1,6 +1,18 @@
 services:
-  at-identity:
+  web:
     build: .
-    ports: ['8001:8000']
-    environment:
-      - DATABASE_URL=postgresql://identity
+    restart: always
+    env_file:
+      - ./.env
+    volumes:
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
+    command: >
+      sh -c "python manage.py migrate &&
+             gunicorn core.wsgi:application --bind 0.0.0.0:8001"
+    ports:
+      - '8001:8001'
+
+volumes:
+  static_volume:
+  media_volume:

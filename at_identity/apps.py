@@ -7,11 +7,3 @@ class AtIdentityConfig(AppConfig):
     
     def ready(self):
         import at_identity.signals
-        
-        # Register app integrations
-        from .integration.base import IdentityService
-        from .integration.storeloop import StoreLoopIntegration
-        from .integration.artisan_crm import ArtisanCRMIntegration
-        
-        IdentityService.register_app(StoreLoopIntegration())
-        IdentityService.register_app(ArtisanCRMIntegration())
