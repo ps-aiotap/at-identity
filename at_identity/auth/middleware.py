@@ -3,6 +3,7 @@ Userless middleware for AT Identity integration
 """
 import requests
 from django.conf import settings
+from django.contrib.auth.models import AnonymousUser
 from .user_proxy import ATIdentityUser
 
 class ATIdentityMiddleware:
@@ -23,18 +24,12 @@ class ATIdentityMiddleware:
                     user_data = response.json()
                     request.user = ATIdentityUser(user_data)
                 else:
-                    request.user = AnonymousATUser()
+                    request.user = AnonymousUser()
             except:
-                request.user = AnonymousATUser()
+                request.user = AnonymousUser()
         else:
-            request.user = AnonymousATUser()
+            request.user = AnonymousUser()
         
         response = self.get_response(request)
         return response
 
-class AnonymousATUser:
-    """Anonymous user for userless system"""
-    is_authenticated = False
-    is_anonymous = True
-    id = None
-    username = ''

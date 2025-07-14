@@ -20,7 +20,8 @@ def debug_partner(request):
     return HttpResponse("<h1>AT Identity Debug</h1><p>System running</p>")
 
 urlpatterns = [
-    # path('admin/', admin.site.urls),  # Removed for userless system
+    path('admin/', admin.site.urls),
+    path('accounts/', include('allauth.urls')),
     path('debug-partner/', debug_partner, name='debug_partner'),
     path('api/', include('at_identity.api.urls')),
     path('', home_redirect, name='home'),

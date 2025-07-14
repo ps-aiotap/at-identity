@@ -1,0 +1,25 @@
+{% extends "account/base.html" %}
+{% load account %}
+
+{% block content %}
+<h4 class="mb-3">Sign Up</h4>
+<form method="post" action="{% url 'account_signup' %}">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label class="form-label">Username</label>
+        <input type="text" name="username" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Password</label>
+        <input type="password" name="password1" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Confirm Password</label>
+        <input type="password" name="password2" class="form-control" required>
+    </div>
+    <button type="submit" class="btn btn-success w-100">Sign Up</button>
+</form>
+<div class="text-center mt-3">
+    <a href="{% url 'account_login' %}">Already have an account? Sign in</a>
+</div>
+{% endblock %}

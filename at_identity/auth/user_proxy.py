@@ -24,3 +24,26 @@ class ATIdentityUser:
     
     def __str__(self):
         return self.username
+
+class AnonymousATUser:
+    """Anonymous user for AT Identity system"""
+    
+    def __init__(self):
+        self.id = None
+        self.username = ''
+        self.email = ''
+        self.first_name = ''
+        self.last_name = ''
+        self.is_active = False
+        self.is_authenticated = False
+        self.is_anonymous = True
+        self._permissions = set()
+    
+    def has_perm(self, permission):
+        return False
+    
+    def get_full_name(self):
+        return ''
+    
+    def __str__(self):
+        return 'AnonymousATUser'

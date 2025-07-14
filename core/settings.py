@@ -22,9 +22,10 @@ DEBUG = os.environ.get("DEBUG", "True").lower() == "true"
 ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
 
 
-# Userless configuration
+# Authentication backends
 AUTHENTICATION_BACKENDS = [
-    "at_identity.auth.backends_userless.UserlessATIdentityBackend",
+    "django.contrib.auth.backends.ModelBackend",
+    "allauth.account.auth_backends.AuthenticationBackend",
 ]
 
 # Application definition
@@ -35,10 +36,15 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.contrib.sites",
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
     "rest_framework",
     "at_identity",
 ]
 
+# Using custom User model
 AUTH_USER_MODEL = "at_identity.User"
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -46,7 +52,7 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "at_identity.auth.middleware.ATIdentityMiddleware",
+    "allauth.account.middleware.AccountMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
@@ -188,27 +194,33 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 # Default primary key field type
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# Using Django's default User model for independence
+# REST Framework configuration
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
+    ],
+    'UNAUTHENTICATED_USER': None,
+    'UNAUTHENTICATED_TOKEN': None,
+}
 
-# Userless authentication
-AUTHENTICATION_BACKENDS = [
-    "at_identity.auth.backends_userless.UserlessATIdentityBackend",
-]
+# Using Django's default User model for independence
 
 AT_IDENTITY_URL = "http://localhost:8001/api/"
 APP_NAME = "at_identity"
 
 # Allauth settings
 SITE_ID = 1
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_EMAIL_VERIFICATION = "optional"
+ACCOUNT_EMAIL_REQUIRED = False
+ACCOUNT_EMAIL_VERIFICATION = "none"
 ACCOUNT_USERNAME_REQUIRED = True
-ACCOUNT_AUTHENTICATION_METHOD = "username_email"
-ACCOUNT_LOGIN_REDIRECT_URL = "/"
-ACCOUNT_LOGOUT_REDIRECT_URL = "/"
-ACCOUNT_SIGNUP_REDIRECT_URL = "/accounts/profile/"
+ACCOUNT_AUTHENTICATION_METHOD = "username"
+ACCOUNT_LOGIN_REDIRECT_URL = "/api/"
+ACCOUNT_LOGOUT_REDIRECT_URL = "/api/"
+ACCOUNT_SIGNUP_REDIRECT_URL = "/api/"
 LOGIN_URL = "/accounts/login/"
 LOGOUT_URL = "/accounts/logout/"
+LOGIN_REDIRECT_URL = "/api/"
 
 # Tailwind configuration
 TAILWIND_APP_NAME = "theme"
