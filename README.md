@@ -47,12 +47,14 @@ python manage.py runserver 8001
 ## Available Endpoints
 
 ### Authentication (Web UI)
+
 - `/accounts/login/` - User login page
 - `/accounts/signup/` - User registration
 - `/accounts/logout/` - Logout
 - `/accounts/password/reset/` - Password reset
 
 ### API Endpoints
+
 - `/api/users/` - User management
 - `/api/organizations/` - Organization management
 - `/api/sync/user/` - Sync users from external apps
@@ -60,6 +62,7 @@ python manage.py runserver 8001
 - `/api/verify-permission/` - Check user permissions
 
 ### Admin
+
 - `/admin/` - Django admin interface
 
 ## Environment Variables
@@ -72,7 +75,7 @@ SECRET_KEY=your-secret-key
 ALLOWED_HOSTS=localhost,127.0.0.1,*
 
 # Database
-DB_NAME=artisan
+DB_NAME=artisan_crm
 DB_USER=postgres
 DB_PASSWORD=your-password
 DB_HOST=localhost
@@ -99,7 +102,7 @@ class ATIdentityMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
         self.identity_url = 'http://localhost:8001/api/'
-    
+
     def __call__(self, request):
         user_id = request.session.get('at_identity_user_id')
         if user_id:
@@ -113,7 +116,7 @@ class ATIdentityMiddleware:
                 request.user = AnonymousUser()
         else:
             request.user = AnonymousUser()
-        
+
         return self.get_response(request)
 ```
 
